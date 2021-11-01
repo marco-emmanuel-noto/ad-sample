@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Complete Website Layout</title>
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link href="style.css" rel="stylesheet">
+
+        <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+        <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+        <script src="Medium-Rectangle_300x250_210719.js"></script>
+        <script>
+            var canvas,
+                stage,
+                exportRoot,
+                anim_container,
+                dom_overlay_container,
+                fnStartAnimation;
+            function init() {
+                canvas = document.getElementById("canvas");
+                anim_container = document.getElementById("animation_container");
+                dom_overlay_container = document.getElementById("dom_overlay_container");
+                var comp = AdobeAn.getComposition("BA1952374CD64B48938F6C695216F2B8");
+                var lib = comp.getLibrary();
+                var loader = new createjs.LoadQueue(false);
+                loader.addEventListener("fileload", function (evt) {
+                    handleFileLoad(evt, comp)
+                });
+                loader.addEventListener("complete", function (evt) {
+                    handleComplete(evt, comp)
+                });
+                var lib = comp.getLibrary();
+                loader.loadManifest(lib.properties.manifest);
+            }
+            function handleFileLoad(evt, comp) {
+                var images = comp.getImages();
+                if (evt && (evt.item.type == "image")) {
+                    images[evt.item.id] = evt.result;
+                }
+            }
+            function handleComplete(evt, comp) {
+                // This function is always called, irrespective of the content. You can use the
+                // variable "stage" after it is created in token create_stage.
+                var lib = comp.getLibrary();
+                var ss = comp.getSpriteSheet();
+                var queue = evt.target;
+                var ssMetadata = lib.ssMetadata;
+                for (i = 0; i < ssMetadata.length; i++) {
+                    ss[ssMetadata[i].name] = new createjs.SpriteSheet({
+                        "images": [queue.getResult(ssMetadata[i].name)],
+                        "frames": ssMetadata[i].frames
+                    })
+                }
+                exportRoot = new lib.MediumRectangle_300x250_210719();
+                stage = new lib.Stage(canvas);
+                //Registers the "tick" event listener.
+                fnStartAnimation = function () {
+                    stage.addChild(exportRoot);
+                    createjs.Ticker.framerate = lib.properties.fps;
+                    createjs
+                        .Ticker
+                        .addEventListener("tick", stage);
+                }
+                //Code to support hidpi screens and responsive scaling.
+                AdobeAn.makeResponsive(false, 'both', false, 1, [canvas, anim_container, dom_overlay_container]);
+                AdobeAn.compositionLoaded(lib.properties.id);
+                fnStartAnimation();
+            }
+        </script>
+
+    </head>
+    <body onload="init();">
+
+        <!-- Navigation -->
+       
+
+        <!--- Image Slider -->
+        <div
+            id="animation_container"
+            style="background-color:rgba(255, 255, 255, 1.00); width:300px; height:250px">
+            <canvas
+                id="canvas"
+                width="300"
+                height="250"
+                style="position: absolute; display: block; background-color:rgba(255, 255, 255, 1.00);"></canvas>
+            <div
+                id="dom_overlay_container"
+                style="pointer-events:none; overflow:hidden; width:300px; height:250px; position: absolute; left: 0px; top: 0px; display: block;"></div>
+        </div>
+
+        <!--- Jumbotron -->
+       
+
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
+
+    </body>
+</html>
